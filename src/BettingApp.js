@@ -1,8 +1,7 @@
-import "./App.css";
 import { useState } from "react";
 import { ethers } from "ethers";
-import Betting from "./artifacts/contracts/Betting.sol/Betting.json";
-import betting from "./betting.json";
+import Betting from "./artifacts/contracts/MyNFT.sol/MyNFT.json";
+import betting from "./contractMetadata.json";
 
 function convertHex(hex) {
   return parseInt(hex._hex, 16);
