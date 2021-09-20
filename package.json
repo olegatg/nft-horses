@@ -16,6 +16,7 @@
     "ethereum-waffle": "^3.3.0",
     "ethernal": "^0.7.6",
     "ethers": "^5.3.1",
+    "framer-motion": "^4.1.17",
     "hardhat": "^2.3.3",
     "hardhat-ethernal": "^0.3.10",
     "react": "^17.0.2",

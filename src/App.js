@@ -9,32 +9,44 @@ import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import MyNFT from "./artifacts/contracts/MyNFT.sol/MyNFT.json";
 import Button from "@mui/material/Button";
+import RaceTrack from "./RaceTrack";
 const metadata = require("./contractMetadata.json");
 
-function convertHex(hex) {
-  return parseInt(hex._hex, 16);
-}
-
-async function fetchNFTsMetadata() {
+async function fetchContract() {
   await window.ethereum.enable();
   if (typeof window.ethereum !== "undefined") {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
-    // could suffice to use provider, but then one gets a diferent adress in setBetting
-    // so we can use signer in both places or come up with a different id mechanism (probably bet id or so)
     const contract = new ethers.Contract(metadata.address, MyNFT.abi, signer);
-
-    const allNFTs = await contract.getAllNFTs();
-
-    const arrOfPromises = allNFTs.map((nft) =>
-      fetch(nft).then((response) => response.json())
-    );
-    return Promise.all(arrOfPromises);
+    return contract;
   }
+}
+async function computeRaceResult() {
+  const contract = await fetchContract();
+  const winner = await contract.doTheRace();
+  console.log(Number(winner));
+  return winner;
+}
+
+async function fetchNFTsMetadata() {
+  const contract = await fetchContract();
+
+  const allNFTs = await contract.getAllNFTs();
+
+  const arrOfPromises = allNFTs.map((nft) =>
+    fetch(nft).then((response) => response.json())
+  );
+  return Promise.all(arrOfPromises);
 }
 
 function App() {
   const [data, setData] = React.useState(undefined);
+  const [winner, setWinner] = React.useState(undefined);
+
+  async function getRaceResult() {
+    const raceResult = await computeRaceResult();
+    setWinner(Number(raceResult));
+  }
 
   React.useEffect(() => {
     fetchNFTsMetadata().then((response) => setData(response));
@@ -46,6 +58,8 @@ function App() {
   console.log(data);
   return (
     <div className="App">
+      <RaceTrack winner={winner} data={data} />
+      <Button onClick={getRaceResult}>Race</Button>
       <List sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
         <Typography variant="h4" component="div" gutterBottom>
           Horse NFTs
