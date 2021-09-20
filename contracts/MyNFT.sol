@@ -14,6 +14,22 @@ contract MyNFT is ERC721URIStorage, Ownable {
 
     constructor() ERC721("MyNFT", "NFT") {}
 
+    function random() private view returns (uint256) {
+        // sha3 and now have been deprecated
+        return
+            uint256(
+                keccak256(
+                    abi.encodePacked(
+                        block.difficulty,
+                        block.timestamp,
+                        _tokenIds.current()
+                    )
+                )
+            );
+        // convert hash to integer
+        // players is an array of entrants
+    }
+
     function mintNFT(address recipient, string memory tokenURI)
         public
         onlyOwner
@@ -26,5 +42,20 @@ contract MyNFT is ERC721URIStorage, Ownable {
         _setTokenURI(newItemId, tokenURI);
         console.log("mintNFT: ", newItemId);
         return newItemId;
+    }
+
+    function doTheRace() public view returns (uint256) {
+        uint256 index = random() % _tokenIds.current();
+        return index;
+    }
+
+    function getAllNFTs() public view returns (string[] memory) {
+        uint256 nrOfNFTs = _tokenIds.current();
+        string[] memory nfts = new string[](nrOfNFTs);
+
+        for (uint256 i = 0; i < nrOfNFTs; i++) {
+            nfts[i] = this.tokenURI(i + 1);
+        }
+        return nfts;
     }
 }
