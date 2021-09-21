@@ -10,9 +10,11 @@ import Typography from "@mui/material/Typography";
 import MyNFT from "./artifacts/contracts/MyNFT.sol/MyNFT.json";
 import Button from "@mui/material/Button";
 import RaceTrack from "./RaceTrack";
+import { breedHorse } from "./breedHorse";
+
 const metadata = require("./contractMetadata.json");
 
-async function fetchContract() {
+export async function fetchContract() {
   await window.ethereum.enable();
   if (typeof window.ethereum !== "undefined") {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -32,9 +34,12 @@ async function fetchNFTsMetadata() {
   const contract = await fetchContract();
 
   const allNFTs = await contract.getAllNFTs();
-
+  console.log({ allNFTs });
   const arrOfPromises = allNFTs.map((nft) =>
-    fetch(nft).then((response) => response.json())
+    fetch(nft).then((response) => {
+      console.log("fetching nft" + nft);
+      return response.json();
+    })
   );
   return Promise.all(arrOfPromises);
 }
@@ -60,6 +65,7 @@ function App() {
     <div className="App">
       <RaceTrack winner={winner} data={data} />
       <Button onClick={getRaceResult}>Race</Button>
+      <Button onClick={() => breedHorse(1, 2)}>BreedHorse</Button>
       <List sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
         <Typography variant="h4" component="div" gutterBottom>
           Horse NFTs

@@ -29,7 +29,6 @@ async function main() {
       }
     }
   );
-
   await myNFT.mintNFT(
     user1,
     "https://gateway.pinata.cloud/ipfs/QmZTANcaGBNDkxjgrwYibeSzGwa4nCKKAvCRHf45tK87PV/horse1-metadata.json"
