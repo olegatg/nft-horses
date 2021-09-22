@@ -23,8 +23,6 @@ const RaceTrack = ({ winner, data }) => {
     return null;
   }
 
-  console.log("Winner", Number(winner));
-
   function calculateHighestFitnessToWin() {
     const fitnessArray = data.map((d) => d.fitness);
     const highestFitness = Math.max.apply(0, fitnessArray);
